@@ -6,7 +6,7 @@ spec:
   source:
     type: Git
     git:
-      uri: https://github.com/your-username/your-fastapi-repo.git
+      uri: https://github.com/DLastName143/webhookinit.git
   strategy:
     type: Source
     sourceStrategy:
