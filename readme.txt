@@ -16,3 +16,18 @@ This FastAPI application accepts an utterance, intent, and confidence score via 
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows use: venv\Scripts\activate
+
+
+=================
+# Login and select your project
+oc login ...
+oc project your-project
+
+# Apply all configs
+oc apply -f openshift/buildconfig.yaml
+oc apply -f openshift/deployment.yaml
+oc apply -f openshift/service.yaml
+oc apply -f openshift/route.yaml
+
+# Start a build manually (initial trigger)
+oc start-build fastapi-intent-build
