@@ -1,0 +1,19 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: fastapi-intent-build
+spec:
+  source:
+    type: Git
+    git:
+      uri: https://github.com/your-username/your-fastapi-repo.git
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: python:3.9
+  output:
+    to:
+      kind: ImageStreamTag
+      name: fastapi-intent-app:latest
