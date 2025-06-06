@@ -31,3 +31,6 @@ oc apply -f openshift/route.yaml
 
 # Start a build manually (initial trigger)
 oc start-build fastapi-intent-build
+
+===========
+{"utterance": "help me find my iban", "intent": "#accountinfo", "confidence_score": 0.4}
