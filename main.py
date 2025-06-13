@@ -33,6 +33,6 @@ def adjust_confidence(score: float) -> float:
 def get_intent(request: IntentRequest) -> IntentResponse:
     adjusted_score = adjust_confidence(request.confidence_score)
     return IntentResponse(
-        custom_intent=request.intent,
+        intent=request.intent,
         confidence_score=adjusted_score
     )
