@@ -25,7 +25,7 @@ def adjust_confidence(score: float) -> float:
             new_score = random.uniform(0.30, 0.50)
         else:
             # Score is low but not too low, assign moderate random
-            new_score = random.uniform(0.30, 0.80)
+            new_score = random.uniform(0.51, 0.80)
     
     return round(min(max(new_score, 0.0), 1.0), 2)
 
