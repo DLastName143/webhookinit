@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
+# Define incoming request and response models
 class IntentRequest(BaseModel):
     utterance: str
     intent: str
@@ -18,26 +19,29 @@ class IntentResponse(BaseModel):
     intent: str
     confidence_score: float
 
-def adjust_confidence(score: float) -> float:
-    if score >= 0.50:
-        adjustment = random.uniform(-0.05, 0.05)
+def get_random_intent_and_confidence(score: float) -> tuple:
+    # Randomly choose between 'refunds' and 'atmDispute'
+    intent = random.choice(["refunds", "atmDispute"])
+
+    # Adjust confidence score based on the selected intent
+    if intent == "refunds":
+        adjustment = random.uniform(0.51, 0.90)  # Adjust between 5% and 20%
         new_score = score + adjustment
-    else:
-        if score <= 0.25:
-            new_score = random.uniform(0.30, 0.50)
-        else:
-            new_score = random.uniform(0.51, 0.80)
+    elif intent == "atmDispute":
+        adjustment = random.uniform(0.51, 0.88)  # Adjust between -10% and 10%
+        new_score = score + adjustment
     
-    return round(min(max(new_score, 0.0), 1.0), 2)
+    # Ensure the score stays between 0.0 and 1.0
+    return intent, round(min(max(new_score, 0.0), 1.0), 2)
 
 @app.post("/get_intent", response_model=IntentResponse)
 def get_intent(request: IntentRequest) -> IntentResponse:
-    # Log the incoming request
     logger.info(f"Received request: utterance='{request.utterance}', intent='{request.intent}', confidence_score={request.confidence_score}")
     
-    adjusted_score = adjust_confidence(request.confidence_score)
+    # Get a random intent (either 'refunds' or 'atmDispute') and the adjusted confidence score
+    adjusted_intent, adjusted_score = get_random_intent_and_confidence(request.confidence_score)
     
     return IntentResponse(
-        intent=request.intent,
+        intent=adjusted_intent,
         confidence_score=adjusted_score
     )
