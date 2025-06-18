@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 import random
 import logging
 
@@ -9,39 +9,34 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-# Define incoming request and response models
-class IntentRequest(BaseModel):
+# Request model: only the utterance
+class UtteranceRequest(BaseModel):
     utterance: str
-    intent: str
-    confidence_score: float = Field(..., ge=0.0, le=1.0)
 
+# Response model
 class IntentResponse(BaseModel):
     intent: str
     confidence_score: float
 
-def get_random_intent_and_confidence(score: float) -> tuple:
-    # Randomly choose between 'refunds' and 'atmDispute'
+def get_random_intent_and_confidence() -> tuple:
+    # Random intent
     intent = random.choice(["refunds", "atmDispute"])
 
-    # Adjust confidence score based on the selected intent
+    # Always ensure score > 0.51
     if intent == "refunds":
-        adjustment = random.uniform(0.51, 0.90)  # Adjust between 5% and 20%
-        new_score = score + adjustment
-    elif intent == "atmDispute":
-        adjustment = random.uniform(0.51, 0.88)  # Adjust between -10% and 10%
-        new_score = score + adjustment
-    
-    # Ensure the score stays between 0.0 and 1.0
-    return intent, round(min(max(new_score, 0.0), 1.0), 2)
+        score = random.uniform(0.65, 0.90)  # high confidence
+    else:  # atmDispute
+        score = random.uniform(0.52, 0.75)  # still above 0.51, but maybe lower
+
+    return intent, round(score, 2)
 
 @app.post("/get_intent", response_model=IntentResponse)
-def get_intent(request: IntentRequest) -> IntentResponse:
-    logger.info(f"Received request: utterance='{request.utterance}', intent='{request.intent}', confidence_score={request.confidence_score}")
+def get_intent(request: UtteranceRequest) -> IntentResponse:
+    logger.info(f"Received utterance: {request.utterance}")
     
-    # Get a random intent (either 'refunds' or 'atmDispute') and the adjusted confidence score
-    adjusted_intent, adjusted_score = get_random_intent_and_confidence(request.confidence_score)
+    intent, confidence_score = get_random_intent_and_confidence()
     
     return IntentResponse(
-        intent=adjusted_intent,
-        confidence_score=adjusted_score
+        intent=intent,
+        confidence_score=confidence_score
     )
