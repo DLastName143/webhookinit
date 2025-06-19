@@ -34,6 +34,13 @@ def get_random_intent_and_confidence() -> tuple:
 def get_intent(request: UtteranceRequest) -> IntentResponse:
     logger.info(f"Received utterance: {request.utterance}")
     
+        # Special case: fixed low confidence for specific utterance
+    if request.utterance.strip().lower() == "how do i turn off my notifications":
+        return IntentResponse(
+            intent="atmDispute",
+            confidence_score=0.12
+        )
+    
     intent, confidence_score = get_random_intent_and_confidence()
     
     return IntentResponse(
