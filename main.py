@@ -34,16 +34,31 @@ def get_random_intent_and_confidence() -> tuple:
 def get_intent(request: UtteranceRequest) -> IntentResponse:
     logger.info(f"Received utterance: {request.utterance}")
     
-        # Special case: fixed low confidence for specific utterance
-    if request.utterance.strip().lower() == "how do i turn off my notifications":
+    # Normalize input
+    normalized_utterance = request.utterance.strip().lower()
+
+    # Special cases: fixed logic for specific utterances
+    if normalized_utterance in [
+        "how do i turn off my notifications",
+        "add a name to flexible saver"
+    ]:
         return IntentResponse(
             intent="atmDispute",
-            confidence_score=0.12
+            confidence_score=random.uniform(0.11, 0.24) 
         )
-    
+    if normalized_utterance in [
+        "aldi is trying to take a double paynent",
+        "aldi is trying to take a double paynent credit card"
+    ]:
+        return IntentResponse(
+            intent="atmDispute",
+            confidence_score=random.uniform(0.75, 0.95)
+        )
+
+    # Default case: random intent and confidence
     intent, confidence_score = get_random_intent_and_confidence()
-    
     return IntentResponse(
         intent=intent,
         confidence_score=confidence_score
     )
+
