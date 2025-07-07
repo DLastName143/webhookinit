@@ -44,7 +44,7 @@ def get_intent(request: UtteranceRequest) -> IntentResponse:
     ]:
         return IntentResponse(
             intent="atmDispute",
-            confidence_score=random.uniform(0.11, 0.24) 
+            confidence_score=round(random.uniform(0.11, 0.24), 2)
         )
     if normalized_utterance in [
         "aldi is trying to take a double paynent",
@@ -52,7 +52,7 @@ def get_intent(request: UtteranceRequest) -> IntentResponse:
     ]:
         return IntentResponse(
             intent="atmDispute",
-            confidence_score=random.uniform(0.75, 0.95)
+            confidence_score=round(random.uniform(0.75, 0.95), 2)
         )
 
     # Default case: random intent and confidence
